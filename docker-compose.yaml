@@ -13,6 +13,7 @@ services:
       - HDFS_CONF_dfs_replication=1
     volumes:
       - ./hadoop_namenode_data:/hadoop/dfs/name
+      - ./data:/data
     networks:
       - hadoop_network
 
@@ -48,6 +49,7 @@ services:
       - "7077:7077"  # Spark master port
     volumes:
       - ./spark_data:/opt/spark/work
+      - ./data:/data
     networks:
       - hadoop_network
     depends_on:
