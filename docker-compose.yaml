@@ -74,6 +74,16 @@ services:
       - spark
     networks:
       - hadoop_network
+  
+  mongo-db:
+    image: mongodb/mongodb-community-server:7.0.2-ubi9
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    volumes: 
+      - ./mongo_data:/data/db
+    networks:
+      - hadoop_network
 
 networks:
   hadoop_network:
