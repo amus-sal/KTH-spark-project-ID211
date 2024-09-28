@@ -1,5 +1,7 @@
 #you can execute the following commands to do the proccess. Execute the commands in the terminal while being in the direcory of the yaml file.
 #execute commands one by one after making sure that the previous command has finished executing.
+#before starting, you have to download the csv file from the following link: https://www.kaggle.com/datasets/umeradnaan/flight-delays-dataset/data
+#and place it in the data folder in the same directory as the yaml file.
 #start the docker containers
 docker compose up -d
 #connect to the hadoop container
