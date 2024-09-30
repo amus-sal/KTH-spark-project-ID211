@@ -9,7 +9,7 @@ docker exec hadoop hdfs dfs -mkdir -p /user/test/data
 docker exec hadoop hdfs dfs -put /data/flight_delays.csv /user/test/data
 
 # Copy the python script to the spark container
-docker compose cp data/load_flight_delays.py spark:/load_flight_delays.py
+docker compose cp data/load_flight_delays.py spark-master:/load_flight_delays.py
 
 # Connect to the spark-master container and install pymongo
 docker exec spark-master pip install 'pymongo[srv]'
