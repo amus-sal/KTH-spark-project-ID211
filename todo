@@ -1,0 +1,3 @@
+-parallelize HDFS to run with two data node similar to what we did for spark.
+-do some data processing or some queries in spark before storing the data in mongo.
+-potentially change how we store things in mongo, depending on what we did for data processing. ( may not be necessary, but let's keep it in mind)
