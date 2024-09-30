@@ -34,67 +34,49 @@ services:
 
   spark-master:
     image: bitnami/spark:3.5
-    container_name: spark-master
-    environment:
-      - SPARK_MODE=master
-      - SPARK_MASTER_HOST=spark
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
-      - CORE_CONF_fs_defaultFS=hdfs://hadoop:9000
     ports:
-      - "8080:8080"  # Spark UI port
-      - "7077:7077"  # Spark master port
+      - "9090:8080"
+      - "7077:7077"
     volumes:
-      - ./spark_data:/opt/spark/work
-      - ./data:/data
-    networks:
-      - hadoop_network
-    depends_on:
-      - hadoop
-
+       - ./apps:/opt/spark-apps
+       - ./data:/opt/spark-data
+    environment:
+      - SPARK_LOCAL_IP=spark-master
+      - SPARK_WORKLOAD=master
   spark-worker-a:
     image: bitnami/spark:3.5
-    container_name: spark-worker-a
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=2G
-      - SPARK_WORKER_CORES=2
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
-    volumes:
-      - ./spark_data:/opt/spark/work
+    ports:
+      - "9091:8080"
     depends_on:
       - spark-master
-    networks:
-      - hadoop_network
-
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-a
+    volumes:
+       - ./apps:/opt/spark-apps
+       - ./data:/opt/spark-data
   spark-worker-b:
     image: bitnami/spark:3.5
-    container_name: spark-worker-b
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=2G
-      - SPARK_WORKER_CORES=2
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
-    volumes:
-      - ./spark_data:/opt/spark/work
+    ports:
+      - "9092:8080"
     depends_on:
       - spark-master
-    networks:
-      - hadoop_network
-  
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker-b
+    volumes:
+        - ./apps:/opt/spark-apps
+        - ./data:/opt/spark-data
   mongo-db:
     image: mongodb/mongodb-community-server:7.0.2-ubi9
     container_name: mongo-db
