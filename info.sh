@@ -5,30 +5,23 @@
 #start the docker containers
 docker compose up -d
 #connect to the hadoop container
-docker exec -it hadoop bash
-#create a directory to store the csv file
-hdfs dfs -mkdir -p /user/test/data
-#copy the csv file to the hdfs directory
-hdfs dfs -put /data/flight_delays.csv /user/test/data
-exit
-#copy the python script to the spark container
+docker exec hadoop hdfs dfs -mkdir -p /user/test/data
+docker exec hadoop hdfs dfs -put /data/flight_delays.csv /user/test/data
+
+# Copy the python script to the spark container
 docker compose cp data/load_flight_delays.py spark:/load_flight_delays.py
-#connect to the spark-master container
-docker exec -it spark-master bash
-#install the pymongo library, that allows spark to connect to the mongodb database
-pip install 'pymongo[srv]'
-#execute the python script that loads the csv file into the mongodb database
-spark-submit --master spark://spark-master:7077 --packages org.mongodb.spark:mongo-spark-connector_2.12:3.0.1 /load_flight_delays.py
-exit
-#connect to the mongodb container
-docker exec -it mongo-db bash
-#start the mongo shell
-mongosh
-#connect to the mongodb database
-use mongodatabase
-#show the collections in the database
-db.flightdelays.find().pretty()
-exit
-exit
-#stop the docker containers
-docker compose down
+
+# Connect to the spark-master container and install pymongo
+docker exec spark-master pip install 'pymongo[srv]'
+
+# Execute the python script that loads the csv file into the mongodb database using spark-submit
+docker exec spark-master spark-submit --master spark://spark-master:7077 --packages org.mongodb.spark:mongo-spark-connector_2.12:3.0.1 /load_flight_delays.py
+
+# Connect to the mongo-db container and run the mongo shell commands
+docker exec mongo-db mongosh --eval "
+  use mongodatabase;
+  db.flightdelays.find().pretty();
+"
+
+# Stop the docker containers
+#docker compose down

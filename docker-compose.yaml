@@ -32,7 +32,7 @@ services:
     networks:
       - hadoop_network
 
-  spark:
+  spark-master:
     image: bitnami/spark:3.5
     container_name: spark-master
     environment:
@@ -55,9 +55,9 @@ services:
     depends_on:
       - hadoop
 
-  spark-worker:
+  spark-worker-a:
     image: bitnami/spark:3.5
-    container_name: spark-worker
+    container_name: spark-worker-a
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
@@ -71,7 +71,27 @@ services:
     volumes:
       - ./spark_data:/opt/spark/work
     depends_on:
-      - spark
+      - spark-master
+    networks:
+      - hadoop_network
+
+  spark-worker-b:
+    image: bitnami/spark:3.5
+    container_name: spark-worker-b
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+    volumes:
+      - ./spark_data:/opt/spark/work
+    depends_on:
+      - spark-master
     networks:
       - hadoop_network
   

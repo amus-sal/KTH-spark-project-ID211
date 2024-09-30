@@ -3,3 +3,4 @@ data/flight_delays.csv
 hadoop_datanode_data/
 hadoop_namenode_data/
 mongo_data/
+oldinfo.sh
