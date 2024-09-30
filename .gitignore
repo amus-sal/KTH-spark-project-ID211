@@ -1,0 +1,5 @@
+data/flight_delays.csv
+.DS_Store
+hadoop_datanode_data/
+hadoop_namenode_data/
+mongo_data/

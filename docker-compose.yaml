@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   hadoop:
     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
@@ -15,6 +13,7 @@ services:
       - HDFS_CONF_dfs_replication=1
     volumes:
       - ./hadoop_namenode_data:/hadoop/dfs/name
+      - ./data:/data
     networks:
       - hadoop_network
 
@@ -50,6 +49,7 @@ services:
       - "7077:7077"  # Spark master port
     volumes:
       - ./spark_data:/opt/spark/work
+      - ./data:/data
     networks:
       - hadoop_network
     depends_on:
@@ -72,6 +72,16 @@ services:
       - ./spark_data:/opt/spark/work
     depends_on:
       - spark
+    networks:
+      - hadoop_network
+  
+  mongo-db:
+    image: mongodb/mongodb-community-server:7.0.2-ubi9
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    volumes: 
+      - ./mongo_data:/data/db
     networks:
       - hadoop_network
 
